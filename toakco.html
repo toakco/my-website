@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TOAKCO — Creative Studio</title>
+  <meta name="description" content="TOAKCO is a creative marketing studio built for small businesses, independent creatives, and bands." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500&family=Caveat:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── BRAND TOKENS ─────────────────────────────────── */
+    :root {
+      --forest:    #1C2820;
+      --bark:      #3D2B1F;
+      --moss:      #5C7A52;
+      --parchment: #F0EBE0;
+      --campfire:  #C97B3A;
+      --screen:    #4E9BB5;
+      --lichen:    #8FA67A;
+      --fog:       #D8D4C8;
+      --pure:      #111110;
+    }
+
+    /* ─── RESET ────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      background: var(--pure);
+      color: var(--parchment);
+      font-family: 'Inter', system-ui, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; color: inherit; }
+    ::selection { background: var(--campfire); color: var(--pure); }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--pure); }
+    ::-webkit-scrollbar-thumb { background: var(--moss); border-radius: 3px; }
+
+    /* ─── TYPE SCALE ───────────────────────────────────── */
+    .display   { font-family: 'Cormorant Garamond', Georgia, serif; }
+    .mono      { font-family: 'Courier New', monospace; letter-spacing: 0.1em; }
+    .accent    { font-family: 'Caveat', cursive; }
+    .label     { font-family: 'Courier New', monospace; font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--campfire); }
+
+    /* ─── LAYOUT ───────────────────────────────────────── */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 2.5rem; }
+    @media (max-width: 768px) { .container { padding: 0 1.25rem; } }
+
+    /* ─── NAVIGATION ───────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.5rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.4s, border-color 0.4s;
+    }
+    nav.scrolled {
+      background: rgba(17, 17, 16, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(216, 212, 200, 0.08);
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--parchment);
+      transition: color 0.3s;
+    }
+    .nav-logo:hover { color: var(--campfire); }
+    .nav-links { display: flex; align-items: center; gap: 2.5rem; }
+    .nav-links a {
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(216,212,200,0.6);
+      transition: color 0.3s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--parchment); }
+    .nav-cta {
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--campfire);
+      color: var(--campfire) !important;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      transition: background 0.3s, color 0.3s !important;
+    }
+    .nav-cta:hover { background: var(--campfire); color: var(--pure) !important; }
+    .nav-burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .nav-burger span { width: 24px; height: 1px; background: var(--parchment); display: block; transition: all 0.3s; }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-burger { display: flex; }
+    }
+
+    /* ─── MOBILE MENU ──────────────────────────────────── */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 99;
+      background: var(--pure);
+      flex-direction: column;
+      justify-content: center;
+      padding: 2rem 2.5rem;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3.5rem;
+      color: var(--parchment);
+      line-height: 1.3;
+      transition: color 0.3s;
+    }
+    .mobile-menu a:hover { color: var(--campfire); }
+    .mobile-menu .m-cta {
+      margin-top: 2rem;
+      display: inline-block;
+      border: 1px solid var(--campfire);
+      color: var(--campfire);
+      padding: 0.75rem 1.5rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    /* ─── HERO ─────────────────────────────────────────── */
+    #hero {
+      position: relative;
+      height: 100vh;
+      min-height: 680px;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('public/images/nature/hero-1.jpg');
+      background-size: cover;
+      background-position: center;
+      will-change: transform;
+      transition: transform 0.05s linear;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(17,17,16,0) 0%, rgba(17,17,16,0.35) 40%, rgba(17,17,16,0.85) 75%, rgba(17,17,16,1) 100%);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 0 2.5rem 5rem;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.3s ease-out forwards;
+    }
+    .hero-eyebrow { font-family: 'Courier New', monospace; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--campfire); margin-bottom: 1rem; }
+    .hero-h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.5rem, 9vw, 8rem);
+      line-height: 1;
+      font-weight: 400;
+      color: var(--parchment);
+      max-width: 800px;
+      letter-spacing: -0.02em;
+    }
+    .hero-h1 em { font-style: italic; color: rgba(216,212,200,0.65); }
+    .hero-sub {
+      margin-top: 1.5rem;
+      font-size: 1.1rem;
+      color: rgba(216,212,200,0.7);
+      max-width: 420px;
+      line-height: 1.7;
+    }
+    .hero-btns { margin-top: 2.5rem; display: flex; flex-wrap: wrap; gap: 1rem; }
+    .btn-primary {
+      padding: 0.9rem 1.75rem;
+      background: var(--campfire);
+      color: var(--pure);
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      transition: background 0.3s;
+      cursor: pointer;
+    }
+    .btn-primary:hover { background: rgba(201,123,58,0.85); }
+    .btn-outline {
+      padding: 0.9rem 1.75rem;
+      border: 1px solid rgba(216,212,200,0.25);
+      color: rgba(216,212,200,0.6);
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      transition: border-color 0.3s, color 0.3s;
+      cursor: pointer;
+    }
+    .btn-outline:hover { border-color: var(--parchment); color: var(--parchment); }
+
+    /* ─── SECTIONS ─────────────────────────────────────── */
+    section { padding: 6rem 0; }
+    .section-label { font-family: 'Courier New', monospace; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--campfire); margin-bottom: 1rem; }
+    .section-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 400;
+      color: var(--parchment);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+    hr.divider { border: none; border-top: 1px solid rgba(216,212,200,0.1); margin: 0; }
+
+    /* ─── INTRO ────────────────────────────────────────── */
+    #intro .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+    @media (max-width: 768px) { #intro .grid-2 { grid-template-columns: 1fr; gap: 2.5rem; } }
+    #intro p { color: rgba(216,212,200,0.65); line-height: 1.85; margin-bottom: 1.25rem; }
+    .text-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--campfire);
+      transition: color 0.3s;
+    }
+    .text-link:hover { color: var(--parchment); }
+    .text-link .arrow { transition: transform 0.3s; }
+    .text-link:hover .arrow { transform: translateX(4px); }
+
+    /* ─── SERVICES ─────────────────────────────────────── */
+    #services { background: none; }
+    .services-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 4rem; flex-wrap: wrap; gap: 1rem; }
+    .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(216,212,200,0.08); }
+    @media (max-width: 900px) { .services-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .services-grid { grid-template-columns: 1fr; } }
+    .service-card {
+      background: var(--pure);
+      padding: 2.5rem;
+      transition: background 0.4s;
+    }
+    .service-card:hover { background: rgba(28,40,32,0.6); }
+    .service-bar {
+      width: 2rem;
+      height: 1px;
+      margin-bottom: 1.5rem;
+      transition: width 0.4s;
+    }
+    .service-card:hover .service-bar { width: 4rem; }
+    .service-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.75rem;
+      color: var(--parchment);
+      margin-bottom: 0.4rem;
+      transition: color 0.3s;
+    }
+    .service-card:hover .service-title { color: var(--campfire); }
+    .service-tag { font-style: italic; font-size: 0.82rem; color: rgba(216,212,200,0.4); margin-bottom: 1rem; }
+    .service-desc { font-size: 0.85rem; color: rgba(216,212,200,0.45); line-height: 1.75; }
+    .service-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 1.25rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(201,123,58,0.5);
+      transition: color 0.3s;
+    }
+    .service-link:hover { color: var(--campfire); }
+
+    /* ─── INTERLUDE ────────────────────────────────────── */
+    #interlude {
+      position: relative;
+      height: 55vh;
+      min-height: 380px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+    .interlude-bg {
+      position: absolute;
+      inset: -20%;
+      background-image: url('public/images/nature/interlude-1.jpg');
+      background-size: cover;
+      background-position: center;
+      will-change: transform;
+    }
+    .interlude-overlay { position: absolute; inset: 0; background: rgba(17,17,16,0.65); }
+    .interlude-quote {
+      position: relative;
+      z-index: 2;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.6rem, 4vw, 3.2rem);
+      font-style: italic;
+      color: var(--parchment);
+      text-align: center;
+      max-width: 800px;
+      padding: 0 2.5rem;
+      line-height: 1.35;
+      font-weight: 300;
+    }
+
+    /* ─── TEAM ─────────────────────────────────────────── */
+    #team .team-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 4rem; flex-wrap: wrap; gap: 1rem; }
+    .team-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.5rem; }
+    @media (max-width: 1024px) { .team-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 560px) { .team-grid { grid-template-columns: repeat(2, 1fr); } }
+    .team-card { cursor: pointer; }
+    .team-photo {
+      aspect-ratio: 3/4;
+      position: relative;
+      overflow: hidden;
+      background: var(--forest);
+      margin-bottom: 1rem;
+    }
+    .team-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+      filter: grayscale(100%);
+      transition: filter 0.7s, transform 0.7s;
+    }
+    .team-card:hover .team-photo img { filter: grayscale(0); transform: scale(1.05); }
+    .team-photo-overlay { position: absolute; inset: 0; background: rgba(17,17,16,0.35); transition: background 0.5s; }
+    .team-card:hover .team-photo-overlay { background: rgba(17,17,16,0.05); }
+    .team-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      color: var(--parchment);
+      transition: color 0.3s;
+    }
+    .team-card:hover .team-name { color: var(--campfire); }
+    .team-role { font-family: 'Courier New', monospace; font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(216,212,200,0.35); margin-top: 0.25rem; }
+
+    /* ─── CTA ──────────────────────────────────────────── */
+    #cta { border-top: 1px solid rgba(216,212,200,0.1); }
+    #cta h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 7vw, 6rem);
+      font-weight: 400;
+      color: var(--parchment);
+      letter-spacing: -0.02em;
+      line-height: 1;
+      margin-bottom: 1.5rem;
+    }
+    #cta p { color: rgba(216,212,200,0.55); font-size: 1.05rem; max-width: 400px; line-height: 1.7; margin-bottom: 2.5rem; }
+
+    /* ─── FOOTER ───────────────────────────────────────── */
+    footer {
+      border-top: 1px solid rgba(216,212,200,0.08);
+      padding: 4rem 0 2.5rem;
+    }
+    .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 4rem; }
+    @media (max-width: 768px) { .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; } }
+    @media (max-width: 480px) { .footer-grid { grid-template-columns: 1fr; } }
+    .footer-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--parchment);
+      display: block;
+      margin-bottom: 1rem;
+      transition: color 0.3s;
+    }
+    .footer-logo:hover { color: var(--campfire); }
+    .footer-tagline { font-size: 0.82rem; color: rgba(216,212,200,0.45); line-height: 1.7; max-width: 200px; }
+    .footer-col-title { font-family: 'Courier New', monospace; font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(216,212,200,0.3); margin-bottom: 1rem; }
+    .footer-col a { display: block; font-size: 0.85rem; color: rgba(216,212,200,0.5); margin-bottom: 0.65rem; transition: color 0.3s; }
+    .footer-col a:hover { color: var(--parchment); }
+    .footer-bottom { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(216,212,200,0.08); padding-top: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+    .footer-copy { font-size: 0.75rem; color: rgba(216,212,200,0.25); }
+    .footer-nature { font-family: 'Courier New', monospace; font-size: 0.65rem; letter-spacing: 0.15em; color: rgba(216,212,200,0.15); }
+
+    /* ─── ANIMATIONS ───────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ─── RESPONSIVE NAV ───────────────────────────────── */
+    @media (max-width: 768px) {
+      .hero-content { padding: 0 1.25rem 4rem; }
+      section { padding: 4rem 0; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── NAVIGATION ──────────────────────────────────────── -->
+  <nav id="nav">
+    <a href="#" class="nav-logo">TOAKCO</a>
+    <div class="nav-links">
+      <a href="#intro">About</a>
+      <a href="#services">Services</a>
+      <a href="#team">Team</a>
+      <a href="work.html">Work</a>
+      <a href="contact.html" class="nav-cta">Start a Project</a>
+    </div>
+    <button class="nav-burger" id="burger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ── MOBILE MENU ─────────────────────────────────────── -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#intro" onclick="closeMenu()">About</a>
+    <a href="#services" onclick="closeMenu()">Services</a>
+    <a href="#team" onclick="closeMenu()">Team</a>
+    <a href="work.html" onclick="closeMenu()">Work</a>
+    <a href="contact.html" class="m-cta">Start a Project</a>
+  </div>
+
+  <!-- ── HERO ────────────────────────────────────────────── -->
+  <section id="hero">
+    <div class="hero-bg" id="heroBg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content container">
+      <p class="hero-eyebrow">Creative Studio — Thousand Oaks, CA</p>
+      <h1 class="hero-h1">
+        Made with<br>
+        <em>intention.</em>
+      </h1>
+      <p class="hero-sub">
+        Brand identity, campaigns, content, and web — for small businesses and independent creatives who care about how they look and what they say.
+      </p>
+      <div class="hero-btns">
+        <a href="contact.html" class="btn-primary">Start a Project</a>
+        <a href="work.html" class="btn-outline">See the Work</a>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ── INTRO ───────────────────────────────────────────── -->
+  <section id="intro">
+    <div class="container">
+      <div class="grid-2">
+        <div class="fade-in">
+          <p class="section-label">Our approach</p>
+          <h2 class="section-heading">Nature and technology as a lens for individuality.</h2>
+        </div>
+        <div class="fade-in" style="transition-delay: 0.15s">
+          <p>TOAKCO is a small creative studio in Thousand Oaks. We work with small businesses, independent creatives, bands, and anyone building something that deserves to look like what it is.</p>
+          <p>We don't use templates. We don't hand work off to contractors. Every project is built in-house by the same team that took the brief.</p>
+          <p>The result is work that holds together — visually, strategically, and across every surface it touches.</p>
+          <a href="#team" class="text-link">Meet the team <span class="arrow">→</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ── SERVICES ────────────────────────────────────────── -->
+  <section id="services">
+    <div class="container">
+      <div class="services-header">
+        <div class="fade-in">
+          <p class="section-label">What we do</p>
+          <h2 class="section-heading">Services</h2>
+        </div>
+        <a href="services.html" class="text-link fade-in">All services <span class="arrow">→</span></a>
+      </div>
+
+      <div class="services-grid">
+        <!-- ↓ Edit service cards here ↓ -->
+
+        <div class="service-card fade-in">
+          <div class="service-bar" style="background: var(--moss)"></div>
+          <h3 class="service-title">Brand Identity</h3>
+          <p class="service-tag">Built to be recognized.</p>
+          <p class="service-desc">Logo, color, typography, voice — every element designed as part of a coherent whole, not a loose collection of assets.</p>
+          <a href="services.html#brand-identity" class="service-link">Learn more <span>→</span></a>
+        </div>
+
+        <div class="service-card fade-in">
+          <div class="service-bar" style="background: var(--campfire)"></div>
+          <h3 class="service-title">Campaign Work</h3>
+          <p class="service-tag">Coordinated. Intentional.</p>
+          <p class="service-desc">From product drops to event launches — coordinated creative across every platform your audience lives on.</p>
+          <a href="services.html#campaigns" class="service-link">Learn more <span>→</span></a>
+        </div>
+
+        <div class="service-card fade-in">
+          <div class="service-bar" style="background: var(--campfire)"></div>
+          <h3 class="service-title">Content Creation</h3>
+          <p class="service-tag">Made to move people.</p>
+          <p class="service-desc">Short-form video, long-form productions, loops, reels — content that gets made, not just planned.</p>
+          <a href="services.html#content" class="service-link">Learn more <span>→</span></a>
+        </div>
+
+        <div class="service-card fade-in">
+          <div class="service-bar" style="background: var(--screen)"></div>
+          <h3 class="service-title">Web & UI/UX</h3>
+          <p class="service-tag">Fast, intentional, yours.</p>
+          <p class="service-desc">Framer-built websites that reflect who you actually are — not a template filled in with your logo.</p>
+          <a href="services.html#web" class="service-link">Learn more <span>→</span></a>
+        </div>
+
+        <div class="service-card fade-in">
+          <div class="service-bar" style="background: var(--lichen)"></div>
+          <h3 class="service-title">Print & Digital</h3>
+          <p class="service-tag">Anything physical or digital.</p>
+          <p class="service-desc">Business cards, flyers, posters, signage — production-ready files built to spec and on brand.</p>
+          <a href="services.html#print-digital" class="service-link">Learn more <span>→</span></a>
+        </div>
+
+        <!-- ↑ End service cards ↑ -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ── INTERLUDE ────────────────────────────────────────── -->
+  <section id="interlude">
+    <div class="interlude-bg" id="interludeBg"></div>
+    <div class="interlude-overlay"></div>
+    <!-- ↓ Edit the quote here ↓ -->
+    <blockquote class="interlude-quote fade-in">
+      "Every brand has a personality. Our job is to find it."
+    </blockquote>
+  </section>
+
+  <!-- ── TEAM ─────────────────────────────────────────────── -->
+  <section id="team">
+    <div class="container">
+      <div class="team-header">
+        <div class="fade-in">
+          <p class="section-label">The people</p>
+          <h2 class="section-heading">The team</h2>
+        </div>
+        <a href="about.html" class="text-link fade-in">Full team <span class="arrow">→</span></a>
+      </div>
+
+      <div class="team-grid">
+        <!-- ↓ Edit team members here — swap image src and names ↓ -->
+
+        <div class="team-card fade-in" onclick="location.href='about.html#jack-lopez'">
+          <div class="team-photo">
+            <img src="public/images/team/jack-lopez.jpg" alt="Jack Lopez" />
+            <div class="team-photo-overlay"></div>
+          </div>
+          <p class="team-name">Jack Lopez</p>
+          <p class="team-role">Creative Direction</p>
+        </div>
+
+        <div class="team-card fade-in" onclick="location.href='about.html#max-sims'">
+          <div class="team-photo">
+            <img src="public/images/team/max-sims.jpg" alt="Max Sims" />
+            <div class="team-photo-overlay"></div>
+          </div>
+          <p class="team-name">Max Sims</p>
+          <p class="team-role">Motion + Video</p>
+        </div>
+
+        <div class="team-card fade-in" onclick="location.href='about.html#rory-moon'">
+          <div class="team-photo">
+            <img src="public/images/team/rory-moon.jpg" alt="Rory Moon" />
+            <div class="team-photo-overlay"></div>
+          </div>
+          <p class="team-name">Rory Moon</p>
+          <p class="team-role">Web + Digital</p>
+        </div>
+
+        <div class="team-card fade-in" onclick="location.href='about.html#samuel-salamanca'">
+          <div class="team-photo">
+            <img src="public/images/team/samuel-salamanca.jpg" alt="Samuel Salamanca" />
+            <div class="team-photo-overlay"></div>
+          </div>
+          <p class="team-name">Samuel Salamanca</p>
+          <p class="team-role">Strategy + Content</p>
+        </div>
+
+        <div class="team-card fade-in" onclick="location.href='about.html#joey-markley'">
+          <div class="team-photo">
+            <img src="public/images/team/joey-markley.jpg" alt="Joey Markley" />
+            <div class="team-photo-overlay"></div>
+          </div>
+          <p class="team-name">Joey Markley</p>
+          <p class="team-role">Founder</p>
+        </div>
+
+        <!-- ↑ End team members ↑ -->
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- ── CTA ──────────────────────────────────────────────── -->
+  <section id="cta">
+    <div class="container">
+      <div class="fade-in">
+        <p class="section-label">Let's work together</p>
+        <!-- ↓ Edit CTA heading here ↓ -->
+        <h2>Ready to build something?</h2>
+        <p>Tell us about your project. We'll be honest about whether we're the right fit, and if we are, we'll make something good together.</p>
+        <div style="display:flex; flex-wrap:wrap; gap:1rem;">
+          <a href="contact.html" class="btn-primary">Start a Conversation</a>
+          <a href="newsletter.html" class="btn-outline">Get the Newsletter</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ───────────────────────────────────────────── -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="#" class="footer-logo">TOAKCO</a>
+          <p class="footer-tagline">A creative studio for brands that care about how they look and what they say.</p>
+          <p style="margin-top:1.5rem; font-family:'Courier New',monospace; font-size:0.65rem; color:rgba(216,212,200,0.2); letter-spacing:0.15em; text-transform:uppercase;">Thousand Oaks, CA</p>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-title">Studio</p>
+          <a href="#intro">About</a>
+          <a href="#services">Services</a>
+          <a href="work.html">Work</a>
+          <a href="contact.html">Contact</a>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-title">Services</p>
+          <a href="services.html#brand-identity">Brand Identity</a>
+          <a href="services.html#campaigns">Campaigns</a>
+          <a href="services.html#content">Content</a>
+          <a href="services.html#web">Web & UI</a>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-title">Connect</p>
+          <a href="newsletter.html">Newsletter</a>
+          <a href="#">Instagram</a>
+          <a href="contact.html">Start a Project</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copy">© 2026 TOAKCO LLC. All rights reserved.</p>
+        <p class="footer-nature">Nature + Technology</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ── Scroll: nav background ──────────────────────────────
+    const nav = document.getElementById('nav')
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40)
+    }, { passive: true })
+
+    // ── Parallax: hero + interlude backgrounds ──────────────
+    const heroBg = document.getElementById('heroBg')
+    const interludeBg = document.getElementById('interludeBg')
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY
+      if (heroBg) heroBg.style.transform = `translateY(${y * 0.28}px)`
+      if (interludeBg) {
+        const rect = document.getElementById('interlude').getBoundingClientRect()
+        const offset = (window.innerHeight - rect.top) * 0.15
+        interludeBg.style.transform = `translateY(${offset}px)`
+      }
+    }, { passive: true })
+
+    // ── Scroll reveal ───────────────────────────────────────
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 60)
+          observer.unobserve(entry.target)
+        }
+      })
+    }, { threshold: 0.08 })
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el))
+
+    // ── Mobile menu ─────────────────────────────────────────
+    const burger = document.getElementById('burger')
+    const mobileMenu = document.getElementById('mobileMenu')
+    burger.addEventListener('click', () => {
+      mobileMenu.classList.toggle('open')
+      document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : ''
+    })
+    function closeMenu() {
+      mobileMenu.classList.remove('open')
+      document.body.style.overflow = ''
+    }
+  </script>
+
+</body>
+</html>
