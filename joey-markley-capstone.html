@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adaptive Clarity — Joey Markley | TOAKS</title>
+  <meta name="description" content="A wearable device that dynamically adjusts lens opacity to help people with light sensitivity live more comfortably in the world." />
+  <link rel="icon" href="favicon-light.svg" type="image/svg+xml" media="(prefers-color-scheme: light)" />
+  <link rel="icon" href="favicon-dark.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root { --forest:#1C2820; --moss:#5C7A52; --parchment:#F0EBE0; --campfire:#C97B3A; --fog:#D8D4C8; --pure:#111110; }
+    /* Capstone accent colors */
+    :root { --cap-bg:#0F0E0C; --cap-cream:#FFF8E7; --cap-gold:#D4A84B; --cap-warm:#F5F0E8; }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--pure); color: var(--parchment); font-family: 'Inter', system-ui, sans-serif; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; color: inherit; }
+    ::selection { background: var(--campfire); color: var(--pure); }
+    ::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-track { background: var(--pure); } ::-webkit-scrollbar-thumb { background: var(--moss); border-radius: 3px; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 2.5rem; }
+    @media (max-width: 768px) { .container { padding: 0 1.25rem; } }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.5rem 2.5rem; display: flex; align-items: center; justify-content: space-between; transition: background 0.4s; }
+    nav.scrolled { background: rgba(17,17,16,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(216,212,200,0.08); }
+    .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--parchment); transition: color 0.3s; }
+    .nav-logo:hover { color: var(--campfire); }
+    .nav-links { display: flex; align-items: center; gap: 2.5rem; }
+    .nav-links a { font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(216,212,200,0.6); transition: color 0.3s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--parchment); }
+    .nav-cta { padding: 0.5rem 1.25rem; border: 1px solid var(--campfire); color: var(--campfire) !important; transition: background 0.3s, color 0.3s !important; }
+    .nav-cta:hover { background: var(--campfire); color: var(--pure) !important; }
+    .nav-burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .nav-burger span { width: 24px; height: 1px; background: var(--parchment); display: block; }
+    @media (max-width: 768px) { .nav-links { display: none; } .nav-burger { display: flex; } }
+    .mobile-menu { display: none; position: fixed; inset: 0; z-index: 99; background: var(--pure); flex-direction: column; justify-content: center; padding: 2rem 2.5rem; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; color: var(--parchment); line-height: 1.3; transition: color 0.3s; }
+    .mobile-menu a:hover { color: var(--campfire); }
+    .mobile-menu .m-cta { margin-top: 2rem; display: inline-block; border: 1px solid var(--campfire); color: var(--campfire); padding: 0.75rem 1.5rem; font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; font-family: 'Inter', sans-serif; }
+
+    /* ── Hero ── */
+    .cap-hero { position: relative; min-height: 100vh; display: flex; align-items: center; overflow: hidden; background: var(--cap-bg); }
+    .cap-hero-bg { position: absolute; inset: 0; }
+    .cap-hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: center; opacity: 0.18; }
+    .cap-hero-gradient { position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(212,168,75,0.06) 0%, transparent 70%), linear-gradient(to bottom, rgba(15,14,12,0.3) 0%, rgba(15,14,12,0.7) 100%); }
+    .cap-hero-content { position: relative; z-index: 10; width: 100%; padding: 10rem 2.5rem 6rem; max-width: 1200px; margin: 0 auto; }
+    .cap-breadcrumb { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; font-family: 'Courier New', monospace; font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,248,231,0.35); }
+    .cap-breadcrumb a:hover { color: var(--cap-gold); }
+    .cap-breadcrumb .sep { color: rgba(255,248,231,0.15); }
+    .cap-eyebrow { font-family: 'Courier New', monospace; font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--cap-gold); margin-bottom: 1.5rem; }
+    .cap-hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(4rem, 12vw, 9rem); font-weight: 300; color: var(--cap-cream); line-height: 0.95; margin-bottom: 2rem; }
+    .cap-hero-sub { font-size: 1.1rem; color: rgba(255,248,231,0.6); line-height: 1.7; max-width: 560px; margin-bottom: 3rem; }
+    .cap-hero-cta { display: inline-flex; align-items: center; gap: 0.75rem; padding: 0.875rem 2rem; border: 1px solid var(--cap-gold); color: var(--cap-gold); font-family: 'Courier New', monospace; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; transition: background 0.3s, color 0.3s; }
+    .cap-hero-cta:hover { background: var(--cap-gold); color: var(--cap-bg); }
+    .cap-pulse { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--cap-gold); animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.7); } }
+
+    /* ── Stats ── */
+    .cap-stats { padding: 5rem 0; border-top: 1px solid rgba(255,248,231,0.06); border-bottom: 1px solid rgba(255,248,231,0.06); background: var(--cap-bg); }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; }
+    @media (max-width: 768px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr 1fr; } }
+    .stat-item { text-align: center; }
+    .stat-number { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 300; color: var(--cap-gold); line-height: 1; margin-bottom: 0.5rem; }
+    .stat-label { font-family: 'Courier New', monospace; font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,248,231,0.3); }
+
+    /* ── Problem / Solution ── */
+    .cap-problem { padding: 7rem 0; background: var(--cap-bg); }
+    .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+    @media (max-width: 768px) { .problem-grid { grid-template-columns: 1fr; gap: 3rem; } }
+    .problem-label { font-family: 'Courier New', monospace; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,248,231,0.3); margin-bottom: 1.5rem; }
+    .problem-heading { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; color: var(--cap-cream); line-height: 1.2; margin-bottom: 1.5rem; }
+    .problem-body { font-size: 0.95rem; color: rgba(255,248,231,0.55); line-height: 1.85; }
+    .problem-body p + p { margin-top: 1.5rem; }
+    .solution-panel { background: rgba(212,168,75,0.06); border: 1px solid rgba(212,168,75,0.15); padding: 2.5rem; }
+    .solution-tag { font-family: 'Courier New', monospace; font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--cap-gold); margin-bottom: 1rem; }
+    .solution-heading { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 400; color: var(--cap-cream); line-height: 1.2; margin-bottom: 1.25rem; }
+    .solution-body { font-size: 0.9rem; color: rgba(255,248,231,0.55); line-height: 1.8; }
+
+    .hw-item-label { padding: 0.875rem 1rem; border-top: 1px solid rgba(255,248,231,0.06); }
+    .hw-item-label p { font-family: 'Courier New', monospace; font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,248,231,0.25); }
+
+
+    /* ── Gallery ── */
+    .cap-gallery { background: var(--cap-bg); }
+    .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(255,248,231,0.06); }
+    @media (max-width: 768px) { .gallery-grid { grid-template-columns: 1fr; } }
+    .gallery-item { overflow: hidden; background: var(--cap-bg); aspect-ratio: 4/3; }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.7s ease, opacity 0.3s; opacity: 0.85; }
+    .gallery-item:hover img { transform: scale(1.03); opacity: 1; }
+
+    /* ── How it Works Video ── */
+    .cap-video { margin-top: 4rem; overflow: hidden; max-width: 720px; margin-left: auto; margin-right: auto; }
+    .cap-video video { width: 100%; display: block; opacity: 0.9; }
+
+    /* ── How it Works ── */
+    .cap-how { padding: 7rem 0; background: rgba(15,14,12,0.97); border-top: 1px solid rgba(255,248,231,0.06); }
+    .how-header { margin-bottom: 4rem; }
+    .how-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 400; color: var(--cap-cream); line-height: 1.1; }
+    .how-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3rem; }
+    @media (max-width: 768px) { .how-steps { grid-template-columns: 1fr; gap: 2.5rem; } }
+    .how-step-num { font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; font-weight: 300; color: rgba(212,168,75,0.2); line-height: 1; margin-bottom: 1rem; }
+    .how-step-title { font-size: 1rem; font-weight: 500; color: var(--cap-cream); margin-bottom: 0.75rem; }
+    .how-step-body { font-size: 0.88rem; color: rgba(255,248,231,0.45); line-height: 1.8; }
+
+    /* ── Participate ── */
+    .cap-participate { padding: 7rem 0; background: var(--cap-bg); border-top: 1px solid rgba(255,248,231,0.06); }
+    .participate-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+    @media (max-width: 768px) { .participate-grid { grid-template-columns: 1fr; gap: 3rem; } }
+    .participate-label { font-family: 'Courier New', monospace; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,248,231,0.3); margin-bottom: 1.5rem; }
+    .participate-heading { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; color: var(--cap-cream); line-height: 1.2; margin-bottom: 1.5rem; }
+    .participate-body { font-size: 0.95rem; color: rgba(255,248,231,0.5); line-height: 1.85; }
+    .cap-form { display: flex; flex-direction: column; gap: 1.25rem; }
+    .cap-form input, .cap-form select, .cap-form textarea { width: 100%; background: rgba(255,248,231,0.04); border: 1px solid rgba(255,248,231,0.1); color: var(--cap-cream); font-family: 'Inter', sans-serif; font-size: 0.875rem; padding: 0.875rem 1rem; outline: none; transition: border-color 0.3s; }
+    .cap-form input::placeholder, .cap-form textarea::placeholder { color: rgba(255,248,231,0.25); }
+    .cap-form input:focus, .cap-form select:focus, .cap-form textarea:focus { border-color: rgba(212,168,75,0.4); }
+    .cap-form select { appearance: none; cursor: pointer; }
+    .cap-form select option { background: var(--cap-bg); }
+    .cap-form textarea { resize: vertical; min-height: 120px; }
+    .cap-form-submit { padding: 0.875rem 2rem; background: transparent; border: 1px solid var(--cap-gold); color: var(--cap-gold); font-family: 'Courier New', monospace; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: background 0.3s, color 0.3s; align-self: flex-start; }
+    .cap-form-submit:hover { background: var(--cap-gold); color: var(--cap-bg); }
+
+    /* ── Attribution ── */
+    .cap-attribution { padding: 3rem 0; background: var(--cap-bg); border-top: 1px solid rgba(255,248,231,0.04); }
+    .attribution-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .attribution-text { font-family: 'Courier New', monospace; font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,248,231,0.18); }
+    .attribution-links { display: flex; gap: 2rem; }
+    .attribution-links a { font-family: 'Courier New', monospace; font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,248,231,0.18); transition: color 0.3s; }
+    .attribution-links a:hover { color: var(--cap-gold); }
+
+    /* ── Project Nav ── */
+    .project-nav { border-top: 1px solid rgba(216,212,200,0.08); padding: 3rem 0; background: var(--pure); }
+    .project-nav-inner { display: flex; align-items: center; justify-content: space-between; }
+    .back-link { display: flex; align-items: center; gap: 0.75rem; color: rgba(216,212,200,0.5); transition: color 0.3s; }
+    .back-link:hover { color: var(--parchment); }
+    .back-link .arrow { color: rgba(216,212,200,0.3); transition: transform 0.3s, color 0.3s; }
+    .back-link:hover .arrow { color: var(--campfire); transform: translateX(-4px); }
+    .back-link-label { font-family: 'Courier New', monospace; font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(216,212,200,0.3); }
+    .back-link-name { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; color: rgba(216,212,200,0.55); }
+    .all-team-link { font-family: 'Courier New', monospace; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(216,212,200,0.3); transition: color 0.3s; }
+    .all-team-link:hover { color: rgba(216,212,200,0.6); }
+
+    footer { border-top: 1px solid rgba(216,212,200,0.08); padding: 4rem 0 2.5rem; }
+    .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 4rem; }
+    @media (max-width: 768px) { .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; } }
+    @media (max-width: 480px) { .footer-grid { grid-template-columns: 1fr; } }
+    .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--parchment); display: block; margin-bottom: 1rem; transition: color 0.3s; }
+    .footer-logo:hover { color: var(--campfire); }
+    .footer-tagline { font-size: 0.82rem; color: rgba(216,212,200,0.45); line-height: 1.7; max-width: 200px; }
+    .footer-col-title { font-family: 'Courier New', monospace; font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(216,212,200,0.3); margin-bottom: 1rem; }
+    .footer-col a { display: block; font-size: 0.85rem; color: rgba(216,212,200,0.5); margin-bottom: 0.65rem; transition: color 0.3s; }
+    .footer-col a:hover { color: var(--parchment); }
+    .footer-bottom { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(216,212,200,0.08); padding-top: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+    .footer-copy { font-size: 0.75rem; color: rgba(216,212,200,0.25); }
+    .footer-nature { font-family: 'Courier New', monospace; font-size: 0.65rem; letter-spacing: 0.15em; color: rgba(216,212,200,0.15); }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    .animate-in { opacity: 0; animation: fadeUp 0.9s 0.2s ease-out forwards; }
+  </style>
+</head>
+<body>
+
+  <nav id="nav">
+    <a href="index.html" class="nav-logo">TOAKS</a>
+    <div class="nav-links">
+      <a href="about.html" class="active">About</a>
+      <a href="services.html">Services</a>
+      <a href="about.html#team">Team</a>
+      <a href="work.html">Work</a>
+      <a href="contact.html" class="nav-cta">Start a Project</a>
+    </div>
+    <button class="nav-burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="about.html" onclick="closeMenu()">About</a>
+    <a href="services.html" onclick="closeMenu()">Services</a>
+    <a href="work.html" onclick="closeMenu()">Work</a>
+    <a href="contact.html" class="m-cta">Start a Project</a>
+  </div>
+
+  <!-- Hero -->
+  <section class="cap-hero">
+    <div class="cap-hero-bg">
+      <div class="cap-hero-gradient"></div>
+    </div>
+    <div class="cap-hero-content animate-in">
+      <div class="cap-breadcrumb">
+        <a href="joey-markley.html">Joey Markley</a>
+        <span class="sep">/</span>
+        <span>Capstone</span>
+      </div>
+      <p class="cap-eyebrow"><span class="cap-pulse"></span>&nbsp;&nbsp;In Development</p>
+      <h1 class="cap-hero-title">Adaptive<br>Clarity</h1>
+      <p class="cap-hero-sub">A wearable device that dynamically adjusts lens opacity to help people with light sensitivity live more comfortably in the world.</p>
+      <a href="#participate" class="cap-hero-cta">Express Interest →</a>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="cap-stats">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item fade-in">
+          <p class="stat-number">38M</p>
+          <p class="stat-label">US Adults with Chronic Migraines</p>
+        </div>
+        <div class="stat-item fade-in" style="transition-delay:0.1s;">
+          <p class="stat-number">90%</p>
+          <p class="stat-label">Report Light Sensitivity</p>
+        </div>
+        <div class="stat-item fade-in" style="transition-delay:0.2s;">
+          <p class="stat-number">&lt;50ms</p>
+          <p class="stat-label">Lens Response Time</p>
+        </div>
+        <div class="stat-item fade-in" style="transition-delay:0.3s;">
+          <p class="stat-number">8hr</p>
+          <p class="stat-label">Target Battery Life</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem / Solution -->
+  <section class="cap-problem">
+    <div class="container">
+      <div class="problem-grid">
+        <div class="fade-in">
+          <p class="problem-label">The Problem</p>
+          <h2 class="problem-heading">Light is unavoidable. The current solutions aren't good enough.</h2>
+          <div class="problem-body">
+            <p>People with photophobia — whether from migraines, traumatic brain injuries, or neurological conditions — navigate a world that wasn't designed for them. Fluorescent offices, bright screens, sunlight through windows: each one is a potential trigger.</p>
+            <p>The existing options are static: dark glasses that work outdoors but make indoor environments too dim to function, or tinted lenses that can't adapt to changing conditions. Nothing responds in real time to what the eye is actually experiencing.</p>
+          </div>
+        </div>
+        <div class="fade-in" style="transition-delay:0.15s;">
+          <div class="solution-panel">
+            <p class="solution-tag">The Solution</p>
+            <h3 class="solution-heading">Lenses that respond as fast as the light changes.</h3>
+            <p class="solution-body">Adaptive Clarity uses electrochromic lens technology and an onboard light sensor to continuously measure ambient luminance and adjust lens opacity in real time — darker in bright environments, clearer in low light. The adjustment happens before the eye has time to register discomfort.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Gallery -->
+  <section class="cap-gallery">
+    <div class="gallery-grid">
+      <div class="gallery-item fade-in">
+        <img src="public/assets/capstone/hf_20260406_001045_8e432d13-2095-4f2e-ad0d-aa83d5ca5f99.png" alt="Device schematic views" loading="lazy" />
+      </div>
+      <div class="gallery-item fade-in" style="transition-delay:0.1s;">
+        <img src="public/assets/capstone/hf_20260414_061138_2da579f9-5ae5-4d9a-8a10-55b30d31d695.png" alt="Device charging detail" loading="lazy" />
+      </div>
+      <div class="gallery-item fade-in" style="transition-delay:0.2s;">
+        <img src="public/assets/capstone/hf_20260414_080344_11504763-9b20-4498-b21b-a92d6ff7f440.png" alt="Device renders" loading="lazy" />
+      </div>
+    </div>
+  </section>
+
+  <!-- How it Works -->
+  <section class="cap-how">
+    <div class="container">
+      <div class="how-header fade-in">
+        <p class="problem-label" style="color:rgba(255,248,231,0.3); font-family:'Courier New',monospace; font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:1rem;">How It Works</p>
+        <h2 class="how-title">Three systems.<br>One seamless response.</h2>
+      </div>
+      <div class="how-steps">
+        <div class="fade-in" style="transition-delay:0.05s;">
+          <p class="how-step-num">01</p>
+          <p class="how-step-title">Sense</p>
+          <p class="how-step-body">An ambient light sensor mounted on the frame continuously reads the luminance of the environment — measuring intensity, spectrum, and rate of change several times per second.</p>
+        </div>
+        <div class="fade-in" style="transition-delay:0.15s;">
+          <p class="how-step-num">02</p>
+          <p class="how-step-title">Process</p>
+          <p class="how-step-body">Onboard firmware translates the sensor data into a target opacity level, weighted against the user's personal comfort profile set up during onboarding. The algorithm learns over time.</p>
+        </div>
+        <div class="fade-in" style="transition-delay:0.25s;">
+          <p class="how-step-num">03</p>
+          <p class="how-step-title">Adapt</p>
+          <p class="how-step-body">The electrochromic lenses respond to the voltage signal in under 50 milliseconds — fast enough to manage sudden changes in lighting before discomfort registers. The transition is smooth, not jarring.</p>
+        </div>
+      </div>
+      <div class="cap-video fade-in">
+        <video autoplay loop muted playsinline>
+          <source src="public/assets/capstone/Capstone Video Reference.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+  </section>
+
+  <!-- Participate / Contact -->
+  <section class="cap-participate" id="participate">
+    <div class="container">
+      <div class="participate-grid">
+        <div class="fade-in">
+          <p class="participate-label">Get Involved</p>
+          <h2 class="participate-heading">Join the early access list.</h2>
+          <p class="participate-body">Adaptive Clarity is in active development. We're building a small group of early adopters — people with light sensitivity conditions who want to be involved in shaping the product before it ships. No commitment required, just signal.</p>
+        </div>
+        <div class="fade-in" style="transition-delay:0.15s;">
+          <form class="cap-form" action="https://formspree.io/f/mzdybnyz" method="POST" onsubmit="handleSubmit(event)">
+            <input type="text" name="name" placeholder="Full name" required />
+            <input type="email" name="email" placeholder="Email address" required />
+            <select name="condition">
+              <option value="" disabled selected>Condition (optional)</option>
+              <option>Chronic Migraine</option>
+              <option>Traumatic Brain Injury</option>
+              <option>Photophobia (other)</option>
+              <option>Prefer not to say</option>
+            </select>
+            <textarea name="message" placeholder="Anything you'd like us to know..."></textarea>
+            <button type="submit" class="cap-form-submit">Submit Interest</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Project Nav -->
+  <div class="project-nav">
+    <div class="container">
+      <div class="project-nav-inner">
+        <a href="joey-markley.html" class="back-link">
+          <span class="arrow">←</span>
+          <div>
+            <p class="back-link-label">Back to</p>
+            <p class="back-link-name">Joey Markley</p>
+          </div>
+        </a>
+        <a href="about.html" class="all-team-link">All team</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="index.html" class="footer-logo">TOAKS</a>
+          <p class="footer-tagline">A creative studio for brands that care about how they look and what they say.</p>
+          <p style="margin-top:1.5rem; font-family:'Courier New',monospace; font-size:0.65rem; color:rgba(216,212,200,0.2); letter-spacing:0.15em; text-transform:uppercase;">Raleigh, NC</p>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-title">Studio</p>
+          <a href="about.html">About</a>
+          <a href="services.html">Services</a>
+          <a href="work.html">Work</a>
+          <a href="contact.html">Contact</a>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-title">Services</p>
+          <a href="services.html#brand-identity">Brand Identity</a>
+          <a href="services.html#campaigns">Campaigns</a>
+          <a href="services.html#content">Content</a>
+          <a href="services.html#web">Web &amp; UI</a>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-title">Connect</p>
+          <a href="newsletter.html">Newsletter</a>
+          <a href="https://www.instagram.com/toakco" target="_blank">Instagram</a>
+          <a href="contact.html">Start a Project</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copy">© 2026 TOAKS LLC. All rights reserved.</p>
+        <p class="footer-nature">Made with Intention.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 40); });
+    const burger = document.getElementById('burger');
+    const menu = document.getElementById('mobileMenu');
+    burger.addEventListener('click', () => menu.classList.toggle('open'));
+    function closeMenu() { menu.classList.remove('open'); }
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    async function handleSubmit(e) {
+      e.preventDefault();
+      const form = e.target;
+      const btn = form.querySelector('.cap-form-submit');
+      btn.textContent = 'Sending...';
+      btn.disabled = true;
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
+        });
+        if (res.ok) {
+          btn.textContent = 'Received — thank you.';
+          btn.style.borderColor = 'rgba(212,168,75,0.4)';
+          btn.style.color = 'rgba(212,168,75,0.6)';
+          form.reset();
+        } else {
+          btn.textContent = 'Something went wrong — try again.';
+          btn.disabled = false;
+        }
+      } catch {
+        btn.textContent = 'Something went wrong — try again.';
+        btn.disabled = false;
+      }
+    }
+  </script>
+
+</body>
+</html>
