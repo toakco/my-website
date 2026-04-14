@@ -299,9 +299,24 @@
 
       submitBtn.disabled = true
       submitBtn.textContent = 'Sending...'
-      await new Promise(r => setTimeout(r, 1200))
-      form.style.display = 'none'
-      formSuccess.classList.add('show')
+
+      try {
+        const res = await fetch('https://formspree.io/f/mnjlnaov', {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
+        })
+        if (res.ok) {
+          form.style.display = 'none'
+          formSuccess.classList.add('show')
+        } else {
+          submitBtn.textContent = 'Something went wrong — try again.'
+          submitBtn.disabled = false
+        }
+      } catch {
+        submitBtn.textContent = 'Something went wrong — try again.'
+        submitBtn.disabled = false
+      }
     })
   </script>
 </body>
